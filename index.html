@@ -5,111 +5,237 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Lizandro Beltrán | Portafolio</title>
 <meta name="description" content="Portafolio de Lizandro Beltrán: ventas, atención al público y proyectos web.">
+<script>if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('anim')</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-/* Layout: columna única con cabecera tipo ficha, grilla de habilidades y un proyecto destacado con vista previa de la app. */
+/* Layout: portada con un cuadro fijo que se expande a pantalla completa al hacer scroll, luego presentación, tres capturas que se expanden una a una y cierre con la demo. */
 :root{
   --bg:#F3F5F9; --surface:#FFFFFF; --ink:#14192B; --muted:#586079; --line:#DCE1EC;
   --accent:#2447D6; --accent-ink:#FFFFFF; --accent-soft:#E4EAFC; --mark:#FFC93C;
   --font-body:'Outfit',system-ui,sans-serif; --font-mono:'IBM Plex Mono',ui-monospace,monospace;
+  --gutter:max(16px,env(safe-area-inset-left,0px)); --gutter-r:max(16px,env(safe-area-inset-right,0px));
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){--bg:#0D111F;--surface:#161C30;--ink:#EEF1FA;--muted:#9BA4C0;--line:#2A3250;--accent:#8CA4FF;--accent-ink:#0B1020;--accent-soft:#222C52;color-scheme:dark}
 }
 :root[data-theme="dark"]{--bg:#0D111F;--surface:#161C30;--ink:#EEF1FA;--muted:#9BA4C0;--line:#2A3250;--accent:#8CA4FF;--accent-ink:#0B1020;--accent-soft:#222C52;color-scheme:dark}
 *{box-sizing:border-box}
-html{color-scheme:light dark}
-body{margin:0;background:var(--bg);color:var(--ink);font:400 1rem/1.6 var(--font-body);
-  padding-block:28px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-.wrap{max-width:960px;margin:0 auto;display:flex;flex-direction:column;gap:40px}
-h1,h2,h3{margin:0;line-height:1.15;text-wrap:balance}
-h2{font-size:1.35rem;font-weight:700;margin-bottom:16px}
-h2 span{background:linear-gradient(transparent 62%,var(--mark) 62%)}
+html{color-scheme:light dark;scroll-padding-top:72px}
+html.anim{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 1rem/1.6 var(--font-body);overflow-x:clip}
+img{display:block;max-width:100%}
+h1,h2,h3{margin:0;line-height:1.1;text-wrap:balance}
 a{color:var(--accent)}
 :focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:4px}
-.top{display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;align-items:flex-end;padding-bottom:28px;border-bottom:2px solid var(--ink)}
+.wrap{max-width:1080px;margin:0 auto;padding-left:var(--gutter);padding-right:var(--gutter-r)}
 .eyebrow{font:500 .78rem var(--font-mono);text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
-h1{font-size:clamp(2.2rem,8vw,4rem);font-weight:800;letter-spacing:-.02em;margin-top:6px}
-.lead{font-size:1.15rem;color:var(--muted);max-width:34em;margin:12px 0 0}
-.where{font:500 .85rem var(--font-mono);color:var(--muted);text-align:right}
-.about{max-width:42em}
-.about p{margin:0 0 12px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px;min-width:0}
-.card h3{font-size:1.02rem;font-weight:700;margin-bottom:6px}
-.card p{margin:0;color:var(--muted);font-size:.94rem}
-.tag{display:inline-block;font:500 .75rem var(--font-mono);background:var(--accent-soft);color:var(--accent);padding:2px 9px;border-radius:999px}
-.project{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:0;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
-.project .body{padding:26px;display:flex;flex-direction:column;gap:12px;align-items:flex-start;min-width:0}
-.project h3{font-size:1.6rem;font-weight:800;letter-spacing:-.01em}
-.project p{margin:0;color:var(--muted)}
-.project ul{margin:0;padding-left:1.1em;color:var(--muted)}
-.project ul li{margin:2px 0}
-.chips{display:flex;flex-wrap:wrap;gap:6px}
-.btn{display:inline-block;background:var(--accent);color:var(--accent-ink);font-weight:700;text-decoration:none;padding:11px 20px;border-radius:8px;border:2px solid var(--accent)}
+.tag{display:inline-block;font:500 .75rem var(--font-mono);background:var(--accent-soft);color:var(--accent);padding:3px 10px;border-radius:999px}
+.btn{display:inline-block;background:var(--accent);color:var(--accent-ink);font-weight:700;text-decoration:none;padding:12px 22px;border-radius:8px;border:2px solid var(--accent)}
 .btn:hover{filter:brightness(1.1)}
-.preview{background:#F2F4F2;background-image:linear-gradient(rgba(176,30,44,.5) 50%,transparent 50%),linear-gradient(90deg,rgba(176,30,44,.5) 50%,transparent 50%);background-size:26px 26px;display:flex;align-items:center;justify-content:center;padding:28px;min-height:260px}
-.sign{background:#20282B;color:#F4F1E8;border:4px solid #8B5E34;border-radius:6px;padding:16px 22px;transform:rotate(-2deg);box-shadow:0 5px 0 rgba(0,0,0,.25);max-width:100%}
-.sign small{font:500 .78rem var(--font-mono);color:#EDBA35;display:block;margin-bottom:2px}
-.sign b{font-size:1.5rem;font-weight:800;display:block;line-height:1.1}
-.sign span{font-size:.8rem;color:#B9C0BD}
-@media (max-width:760px){.project{grid-template-columns:minmax(0,1fr)}.where{text-align:left}}
-footer{color:var(--muted);font-size:.85rem;border-top:1px solid var(--line);padding-top:16px}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--ink)}
+/* barra superior y progreso */
+.bar{position:fixed;inset:0 0 auto 0;z-index:20;background:color-mix(in srgb,var(--bg) 78%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding-top:env(safe-area-inset-top,0px)}
+.bar .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:56px}
+.bar b{font-weight:800;letter-spacing:-.01em}
+.bar nav{display:flex;align-items:center;gap:6px 18px;flex-wrap:wrap;justify-content:flex-end}
+.bar nav a{color:var(--ink);text-decoration:none;font-weight:500;font-size:.92rem}
+.bar nav a:hover{color:var(--accent)}
+.bar nav .btn{padding:6px 14px;font-size:.88rem;color:var(--accent-ink)}
+.progress{position:fixed;left:0;right:0;top:0;height:3px;background:var(--accent);transform-origin:0 50%;transform:scaleX(0);z-index:30}
+@media (max-width:560px){.bar nav a.l{display:none}}
+/* portada */
+.stage{position:relative}
+.sticky{position:relative}
+.intro{max-width:1080px;margin:0 auto;padding:calc(96px + env(safe-area-inset-top,0px)) var(--gutter-r) 28px var(--gutter)}
+.intro h1{font-size:clamp(2.6rem,7.4vw,6rem);font-weight:800;letter-spacing:-.03em;margin-top:8px}
+.intro .lead{font-size:clamp(1rem,1.6vw,1.2rem);color:var(--muted);max-width:34em;margin:14px 0 0}
+.frame{margin:0 auto;width:min(100% - var(--gutter) - var(--gutter-r),1080px);aspect-ratio:16/10;overflow:hidden;border-radius:18px;border:1px solid var(--line);box-shadow:0 18px 50px rgba(20,25,43,.18);background:var(--line)}
+.frame img,.shot-frame img{width:100%;height:100%;object-fit:cover}
+.cap{display:flex;justify-content:center;margin:16px var(--gutter);font:500 .85rem var(--font-mono);color:var(--muted)}
+.anim .stage{height:300vh}
+.anim .sticky{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
+.anim .intro{position:absolute;left:0;right:0;top:0;z-index:2;max-width:1080px;margin:0 auto;padding-left:var(--gutter);padding-right:var(--gutter-r);will-change:transform,opacity}
+.anim .frame{--fh:min(100svh,62.5vw);position:absolute;left:0;top:calc(50% - var(--fh) / 2);width:100%;height:var(--fh);aspect-ratio:auto;margin:0;border:0;border-radius:34px;transform:translateY(18%) scale(.56);will-change:transform}
+.anim .cap{display:inline-flex;position:absolute;left:50%;bottom:calc(26px + env(safe-area-inset-bottom,0px));margin:0;transform:translateX(-50%);opacity:0;z-index:3;background:rgba(14,18,32,.82);color:#fff;padding:8px 16px;border-radius:999px;white-space:nowrap;max-width:calc(100% - 32px);overflow:hidden;text-overflow:ellipsis}
+@media (max-width:700px){.anim .frame{--fh:min(60svh,100vw);transform:translateY(34%) scale(.74)}}
+/* presentación */
+.about{padding-block:clamp(72px,12vw,160px) clamp(40px,6vw,80px)}
+.statement{font-size:clamp(1.7rem,4.6vw,3.2rem);font-weight:700;line-height:1.18;letter-spacing:-.02em;margin:14px 0 0;max-width:20em;text-wrap:pretty}
+.statement .w{display:inline-block;white-space:pre}
+.about p.more{max-width:38em;color:var(--muted);font-size:1.08rem;margin:26px 0 0}
+.skills{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:44px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:20px;min-width:0}
+.card h3{font-size:1.05rem;font-weight:700;margin-bottom:6px}
+.card p{margin:0;color:var(--muted);font-size:.95rem}
+/* proyecto */
+.proj-intro{padding-block:clamp(56px,9vw,120px) 0}
+.proj-intro h2{font-size:clamp(2rem,5.4vw,4rem);font-weight:800;letter-spacing:-.025em;margin:12px 0 14px}
+.proj-intro p{max-width:38em;color:var(--muted);font-size:1.1rem;margin:0}
+.shot{padding-top:clamp(44px,8vw,110px)}
+.shot-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:8px 40px;align-items:end;margin-bottom:22px}
+.shot-head h3{font-size:clamp(1.5rem,3.4vw,2.4rem);font-weight:800;letter-spacing:-.02em;margin-top:8px}
+.shot-head p{margin:0;color:var(--muted);font-size:1.05rem}
+.shot-head small{display:block;margin-top:8px;font-size:.85rem}
+@media (max-width:760px){.shot-head{grid-template-columns:minmax(0,1fr)}}
+.shot-frame{margin:0;width:100%;aspect-ratio:16/10;max-height:100svh;overflow:hidden;background:var(--line)}
+.shot-frame img{will-change:transform}
+.anim .shot-frame{transform:scale(.78);border-radius:30px;will-change:transform}
+.anim .shot-frame img{transform:scale(1.14)}
+/* cierre */
+.end{padding-block:clamp(72px,11vw,150px) 56px}
+.end h2{font-size:clamp(2rem,5.4vw,4rem);font-weight:800;letter-spacing:-.025em;max-width:14em}
+.feats{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin:36px 0}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.note{color:var(--muted);font-size:.9rem;margin:16px 0 0;max-width:38em}
+footer{border-top:1px solid var(--line);padding-block:20px 40px;color:var(--muted);font-size:.85rem}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header class="top">
-    <div>
-      <div class="eyebrow">Portafolio</div>
+<div class="progress" aria-hidden="true"></div>
+<header class="bar">
+  <div class="wrap">
+    <b>Lizandro Beltrán</b>
+    <nav aria-label="Secciones">
+      <a class="l" href="#sobre">Sobre mí</a>
+      <a class="l" href="#proyecto">Proyecto</a>
+      <a class="btn" href="fiambreria/">Demo</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<section class="stage" id="inicio" aria-label="Portada">
+  <div class="sticky">
+    <div class="intro">
+      <div class="eyebrow">Portafolio · Villa Carlos Paz, Córdoba</div>
       <h1>Lizandro Beltrán</h1>
       <p class="lead">Ventas y atención al público, con ganas de crecer en tecnología. Acá muestro lo que voy armando.</p>
     </div>
-    <div class="where">Villa Carlos Paz<br>Córdoba, Argentina</div>
-  </header>
+    <figure class="frame">
+      <img src="img/resumen.webp" width="2160" height="1350" fetchpriority="high" alt="Pantalla de resumen de la app de stock: ventas del día y del mes, gráfico de los últimos 7 días y productos para reponer.">
+    </figure>
+    <div class="cap">Stock y Facturación · app para fiambrería</div>
+  </div>
+</section>
 
-  <section class="about" aria-labelledby="sobre">
-    <h2 id="sobre"><span>Sobre mí</span></h2>
-    <p>Tengo experiencia en ventas, atención al público, caja y logística. Sé cómo es trabajar detrás de un mostrador, y por eso me interesa crear herramientas que le resuelvan el día a un comercio.</p>
-    <p>Me atrae la programación y el diseño web. Hice un curso de diseño web, conozco HTML y manejo Office.</p>
-  </section>
-
-  <section aria-labelledby="hace">
-    <h2 id="hace"><span>Lo que sé hacer</span></h2>
-    <div class="grid">
+<section class="about" id="sobre" aria-labelledby="sobre-t">
+  <div class="wrap">
+    <div class="eyebrow" id="sobre-t">Sobre mí</div>
+    <p class="statement" data-split>Sé cómo es estar detrás de un mostrador. Por eso armo herramientas web que le resuelvan el día a un comercio.</p>
+    <p class="more">Tengo experiencia en ventas, atención al público, caja y logística. Me atrae la programación y el diseño web: hice un curso de diseño web, conozco HTML y manejo Office.</p>
+    <div class="skills">
       <article class="card"><h3>Ventas y atención</h3><p>Trato con clientes, asesoramiento y cierre de ventas.</p></article>
       <article class="card"><h3>Caja y logística</h3><p>Cobros, control de mercadería y orden del stock.</p></article>
       <article class="card"><h3>Web</h3><p>Páginas con HTML y CSS, y diseño de interfaces.</p></article>
       <article class="card"><h3>Office</h3><p>Planillas, documentos y presentaciones.</p></article>
     </div>
-  </section>
+  </div>
+</section>
 
-  <section aria-labelledby="proy">
-    <h2 id="proy"><span>Proyecto destacado</span></h2>
-    <article class="project">
-      <div class="body">
-        <span class="tag">Aplicación web</span>
-        <h3>Stock y Facturación para fiambrería</h3>
-        <p>Una página para llevar el control de la mercadería y emitir comprobantes de venta. Pensada para un comercio de fiambres y almacén.</p>
-        <ul>
-          <li>Productos con stock mínimo y aviso de reposición.</li>
-          <li>Ventas con comprobante que descuentan el stock.</li>
-          <li>Lectura de código de barras y de etiquetas de balanza.</li>
-          <li>Resumen con ventas de la semana y estado del mostrador.</li>
-        </ul>
-        <div class="chips"><span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">JavaScript</span></div>
-        <a class="btn" href="fiambreria/">Probar la demo</a>
-        <p style="font-size:.85rem">La demo trae datos de ejemplo y guarda lo que cargues solo en tu navegador.</p>
-      </div>
-      <div class="preview" aria-hidden="true">
-        <div class="sign"><small>Fiambrería y almacén</small><b>Stock y Facturación</b><span>Cuadros rojos, pizarra y salames</span></div>
-      </div>
-    </article>
-  </section>
+<section id="proyecto" aria-labelledby="proy-t">
+  <div class="wrap proj-intro">
+    <span class="tag">Proyecto destacado</span>
+    <h2 id="proy-t">Stock y Facturación para fiambrería</h2>
+    <p>Una página para llevar el control de la mercadería y emitir comprobantes de venta, pensada para un comercio de fiambres y almacén. Estas son sus pantallas.</p>
+  </div>
 
-  <footer>© Lizandro Beltrán · Hecho a mano con HTML y CSS.</footer>
-</div>
+  <article class="shot">
+    <div class="wrap shot-head">
+      <div><span class="tag">Stock</span><h3>Cada producto con su estado</h3></div>
+      <p>Los productos bajos o agotados se marcan solos, así sabés qué reponer antes de quedarte sin mercadería.</p>
+    </div>
+    <figure class="shot-frame"><img src="img/stock.webp" width="2160" height="1350" loading="lazy" alt="Lista de productos con su stock, estado, costo y precio de venta."></figure>
+  </article>
+
+  <article class="shot">
+    <div class="wrap shot-head">
+      <div><span class="tag">Venta</span><h3>Escaneás y se carga</h3></div>
+      <p>Funciona con lector de código de barras. Los fiambres por kilo se cargan leyendo la etiqueta de la balanza: la app toma el peso y calcula el importe.</p>
+    </div>
+    <figure class="shot-frame"><img src="img/vender.webp" width="2160" height="1350" loading="lazy" alt="Pantalla de venta con cuatro productos cargados, dos de ellos pesados en kilos, con el total y el IVA."></figure>
+  </article>
+
+  <article class="shot">
+    <div class="wrap shot-head">
+      <div><span class="tag">Comprobante</span><h3>Un comprobante por venta</h3></div>
+      <p>Descuenta el stock, discrimina el IVA y se puede anular: la mercadería vuelve al inventario.<small>Es un comprobante interno, no una factura fiscal.</small></p>
+    </div>
+    <figure class="shot-frame"><img src="img/comprobante.webp" width="2160" height="1350" loading="lazy" alt="Comprobante de venta con el detalle de productos, el IVA y el total."></figure>
+  </article>
+</section>
+
+<section class="end" aria-labelledby="fin-t">
+  <div class="wrap">
+    <h2 id="fin-t">Probala vos mismo</h2>
+    <div class="feats">
+      <article class="card"><h3>Stock mínimo</h3><p>Aviso de reposición por producto.</p></article>
+      <article class="card"><h3>Ventas que descuentan</h3><p>Cada comprobante actualiza el inventario.</p></article>
+      <article class="card"><h3>Balanza y códigos</h3><p>Lectura de código de barras y etiquetas de balanza.</p></article>
+    </div>
+    <div class="row"><a class="btn" href="fiambreria/">Abrir la demo</a><span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">JavaScript</span></div>
+    <p class="note">La demo trae datos de ejemplo y guarda lo que cargues solo en tu navegador.</p>
+  </div>
+</section>
+</main>
+
+<footer><div class="wrap">© Lizandro Beltrán · Hecho a mano con HTML, CSS y GSAP.</div></footer>
+
+<script src="assets/gsap.min.js"></script>
+<script src="assets/ScrollTrigger.min.js"></script>
+<script>
+(function(){
+  var root=document.documentElement;
+  /* sin la clase anim (movimiento reducido) la página queda estática */
+  if(!root.classList.contains('anim'))return;
+  if(!window.gsap||!window.ScrollTrigger){root.classList.remove('anim');return}
+  gsap.registerPlugin(ScrollTrigger);
+
+  /* partir la frase en palabras para encenderlas al hacer scroll */
+  document.querySelectorAll('[data-split]').forEach(function(el){
+    var words=el.textContent.trim().split(/\s+/);
+    el.setAttribute('aria-label',words.join(' '));
+    el.innerHTML=words.map(function(w){return '<span class="w" aria-hidden="true">'+w+' </span>'}).join('');
+  });
+
+  var mm=gsap.matchMedia();
+  mm.add({small:'(max-width: 700px)',big:'(min-width: 701px)'},function(ctx){
+    var small=ctx.conditions.small;
+
+    /* portada: el cuadro crece hasta ocupar toda la pantalla */
+    gsap.timeline({scrollTrigger:{trigger:'.stage',start:'top top',end:'bottom bottom',scrub:0.7}})
+      .fromTo('.frame',{scale:small?0.74:0.56,x:0,y:0,yPercent:small?34:18,borderRadius:34},{scale:1,x:0,y:0,yPercent:0,borderRadius:0,ease:'none',duration:0.8},0)
+      .fromTo('.frame img',{scale:1.12},{scale:1,ease:'none',duration:1},0)
+      .to('.intro',{yPercent:-28,opacity:0,ease:'none',duration:0.45},0)
+      .fromTo('.cap',{opacity:0,y:24},{opacity:1,y:0,ease:'none',duration:0.2},0.8);
+
+    /* frase: cada palabra se enciende */
+    gsap.fromTo('.statement .w',{opacity:0.16},{opacity:1,ease:'none',stagger:0.12,
+      scrollTrigger:{trigger:'.statement',start:'top 82%',end:'bottom 46%',scrub:0.5}});
+
+    /* tarjetas */
+    ['.skills','.feats'].forEach(function(sel){
+      gsap.from(sel+' .card',{y:46,opacity:0,duration:0.7,stagger:0.12,ease:'power3.out',
+        scrollTrigger:{trigger:sel,start:'top 85%',once:true}});
+    });
+
+    /* capturas: se expanden hasta el ancho completo, con la imagen en parallax */
+    gsap.utils.toArray('.shot').forEach(function(shot){
+      var frame=shot.querySelector('.shot-frame'),img=frame.querySelector('img'),head=shot.querySelector('.shot-head');
+      gsap.fromTo(frame,{scale:small?0.88:0.78,x:0,y:0,borderRadius:30},{scale:1,x:0,y:0,borderRadius:0,ease:'none',
+        scrollTrigger:{trigger:frame,start:'top 92%',end:'top 22%',scrub:0.6}});
+      gsap.fromTo(img,{scale:1.14,yPercent:-5},{scale:1.14,yPercent:5,ease:'none',
+        scrollTrigger:{trigger:frame,start:'top bottom',end:'bottom top',scrub:true}});
+      gsap.from(head,{y:40,opacity:0,duration:0.8,ease:'power3.out',
+        scrollTrigger:{trigger:head,start:'top 88%',once:true}});
+    });
+  });
+
+  /* barra de progreso */
+  gsap.to('.progress',{scaleX:1,ease:'none',scrollTrigger:{start:0,end:'max',scrub:0.3}});
+  window.addEventListener('load',function(){ScrollTrigger.refresh()});
+})();
+</script>
 </body>
 </html>
