@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Lizandro Beltrán | Portafolio</title>
+<meta name="description" content="Portafolio de Lizandro Beltrán: ventas, atención al público y proyectos web.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: columna única con cabecera tipo ficha, grilla de habilidades y un proyecto destacado con vista previa de la app. */
+:root{
+  --bg:#F3F5F9; --surface:#FFFFFF; --ink:#14192B; --muted:#586079; --line:#DCE1EC;
+  --accent:#2447D6; --accent-ink:#FFFFFF; --accent-soft:#E4EAFC; --mark:#FFC93C;
+  --font-body:'Outfit',system-ui,sans-serif; --font-mono:'IBM Plex Mono',ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){--bg:#0D111F;--surface:#161C30;--ink:#EEF1FA;--muted:#9BA4C0;--line:#2A3250;--accent:#8CA4FF;--accent-ink:#0B1020;--accent-soft:#222C52;color-scheme:dark}
+}
+:root[data-theme="dark"]{--bg:#0D111F;--surface:#161C30;--ink:#EEF1FA;--muted:#9BA4C0;--line:#2A3250;--accent:#8CA4FF;--accent-ink:#0B1020;--accent-soft:#222C52;color-scheme:dark}
+*{box-sizing:border-box}
+html{color-scheme:light dark}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 1rem/1.6 var(--font-body);
+  padding-block:28px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:960px;margin:0 auto;display:flex;flex-direction:column;gap:40px}
+h1,h2,h3{margin:0;line-height:1.15;text-wrap:balance}
+h2{font-size:1.35rem;font-weight:700;margin-bottom:16px}
+h2 span{background:linear-gradient(transparent 62%,var(--mark) 62%)}
+a{color:var(--accent)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:4px}
+.top{display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;align-items:flex-end;padding-bottom:28px;border-bottom:2px solid var(--ink)}
+.eyebrow{font:500 .78rem var(--font-mono);text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+h1{font-size:clamp(2.2rem,8vw,4rem);font-weight:800;letter-spacing:-.02em;margin-top:6px}
+.lead{font-size:1.15rem;color:var(--muted);max-width:34em;margin:12px 0 0}
+.where{font:500 .85rem var(--font-mono);color:var(--muted);text-align:right}
+.about{max-width:42em}
+.about p{margin:0 0 12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px;min-width:0}
+.card h3{font-size:1.02rem;font-weight:700;margin-bottom:6px}
+.card p{margin:0;color:var(--muted);font-size:.94rem}
+.tag{display:inline-block;font:500 .75rem var(--font-mono);background:var(--accent-soft);color:var(--accent);padding:2px 9px;border-radius:999px}
+.project{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:0;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.project .body{padding:26px;display:flex;flex-direction:column;gap:12px;align-items:flex-start;min-width:0}
+.project h3{font-size:1.6rem;font-weight:800;letter-spacing:-.01em}
+.project p{margin:0;color:var(--muted)}
+.project ul{margin:0;padding-left:1.1em;color:var(--muted)}
+.project ul li{margin:2px 0}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.btn{display:inline-block;background:var(--accent);color:var(--accent-ink);font-weight:700;text-decoration:none;padding:11px 20px;border-radius:8px;border:2px solid var(--accent)}
+.btn:hover{filter:brightness(1.1)}
+.preview{background:#F2F4F2;background-image:linear-gradient(rgba(176,30,44,.5) 50%,transparent 50%),linear-gradient(90deg,rgba(176,30,44,.5) 50%,transparent 50%);background-size:26px 26px;display:flex;align-items:center;justify-content:center;padding:28px;min-height:260px}
+.sign{background:#20282B;color:#F4F1E8;border:4px solid #8B5E34;border-radius:6px;padding:16px 22px;transform:rotate(-2deg);box-shadow:0 5px 0 rgba(0,0,0,.25);max-width:100%}
+.sign small{font:500 .78rem var(--font-mono);color:#EDBA35;display:block;margin-bottom:2px}
+.sign b{font-size:1.5rem;font-weight:800;display:block;line-height:1.1}
+.sign span{font-size:.8rem;color:#B9C0BD}
+@media (max-width:760px){.project{grid-template-columns:minmax(0,1fr)}.where{text-align:left}}
+footer{color:var(--muted);font-size:.85rem;border-top:1px solid var(--line);padding-top:16px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="eyebrow">Portafolio</div>
+      <h1>Lizandro Beltrán</h1>
+      <p class="lead">Ventas y atención al público, con ganas de crecer en tecnología. Acá muestro lo que voy armando.</p>
+    </div>
+    <div class="where">Villa Carlos Paz<br>Córdoba, Argentina</div>
+  </header>
+
+  <section class="about" aria-labelledby="sobre">
+    <h2 id="sobre"><span>Sobre mí</span></h2>
+    <p>Tengo experiencia en ventas, atención al público, caja y logística. Sé cómo es trabajar detrás de un mostrador, y por eso me interesa crear herramientas que le resuelvan el día a un comercio.</p>
+    <p>Me atrae la programación y el diseño web. Hice un curso de diseño web, conozco HTML y manejo Office.</p>
+  </section>
+
+  <section aria-labelledby="hace">
+    <h2 id="hace"><span>Lo que sé hacer</span></h2>
+    <div class="grid">
+      <article class="card"><h3>Ventas y atención</h3><p>Trato con clientes, asesoramiento y cierre de ventas.</p></article>
+      <article class="card"><h3>Caja y logística</h3><p>Cobros, control de mercadería y orden del stock.</p></article>
+      <article class="card"><h3>Web</h3><p>Páginas con HTML y CSS, y diseño de interfaces.</p></article>
+      <article class="card"><h3>Office</h3><p>Planillas, documentos y presentaciones.</p></article>
+    </div>
+  </section>
+
+  <section aria-labelledby="proy">
+    <h2 id="proy"><span>Proyecto destacado</span></h2>
+    <article class="project">
+      <div class="body">
+        <span class="tag">Aplicación web</span>
+        <h3>Stock y Facturación para fiambrería</h3>
+        <p>Una página para llevar el control de la mercadería y emitir comprobantes de venta. Pensada para un comercio de fiambres y almacén.</p>
+        <ul>
+          <li>Productos con stock mínimo y aviso de reposición.</li>
+          <li>Ventas con comprobante que descuentan el stock.</li>
+          <li>Lectura de código de barras y de etiquetas de balanza.</li>
+          <li>Resumen con ventas de la semana y estado del mostrador.</li>
+        </ul>
+        <div class="chips"><span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">JavaScript</span></div>
+        <a class="btn" href="fiambreria/">Probar la demo</a>
+        <p style="font-size:.85rem">La demo trae datos de ejemplo y guarda lo que cargues solo en tu navegador.</p>
+      </div>
+      <div class="preview" aria-hidden="true">
+        <div class="sign"><small>Fiambrería y almacén</small><b>Stock y Facturación</b><span>Cuadros rojos, pizarra y salames</span></div>
+      </div>
+    </article>
+  </section>
+
+  <footer>© Lizandro Beltrán · Hecho a mano con HTML y CSS.</footer>
+</div>
+</body>
+</html>
