@@ -470,9 +470,10 @@ function vAjustes(){
       <li>Conectá la impresora por USB e instalá su controlador (lo da el fabricante o viene en el CD). Debería aparecer en Impresoras y escáneres de Windows.</li>
       <li>En Windows, ponela como impresora predeterminada.</li>
       <li>Tocá “Imprimir ticket de prueba”. En la ventana de Chrome elegí tu impresora y, en “Más ajustes”, poné Márgenes: Ninguno, Escala: 100% y desactivá Encabezados y pies de página.</li>
-      <li>Para que imprima sin preguntar cada vez: cerrá Chrome, hacé clic derecho en su acceso directo, entrá a Propiedades y al final del campo “Destino” agregá un espacio y <code>--kiosk-printing</code>. Abrí Chrome desde ese acceso directo.</li>
+      <li>Para que el ticket salga solo, sin la ventana de impresión, descargá el acceso directo con el botón de abajo, guardalo en el escritorio y abrí siempre la página desde ahí. Se abre en una ventana propia de Chrome con la impresión automática. Los datos de esa ventana se guardan aparte de tu Chrome de siempre.</li>
     </ol>
-    <p class="hint" style="margin-top:10px">Este ticket es un comprobante interno: dice “no válido como factura”. Para una factura legal hay que emitirla desde ARCA o con un controlador fiscal homologado.</p></section>`:''}
+    <div class="row" style="margin-top:12px"><button type="button" class="btn primary" data-action="dl-bat">Descargar acceso directo para imprimir sin preguntar</button></div>
+    <p class="hint" style="margin-top:10px">Windows puede mostrar un aviso al abrir un archivo .bat descargado: elegí “Más información” y “Ejecutar de todas formas”. Este ticket es un comprobante interno: dice “no válido como factura”. Para una factura legal hay que emitirla desde ARCA o con un controlador fiscal homologado.</p></section>`:''}
 
   <section class="panel"><div class="panel-head"><h2>Probar una etiqueta de balanza</h2></div>
     <label class="f">Escaneá o escribí el código de la etiqueta<input id="bz-test" inputmode="numeric" placeholder="Ej.: 2000109007502" autocomplete="off"></label>
@@ -653,6 +654,30 @@ function printTicket(inv){
     setTimeout(()=>{try{f.remove()}catch(e){}},120000);
   }catch(e){toast('No se pudo preparar el ticket.')}
 }
+function descargarAcceso(){
+  const url=location.protocol==='file:'?location.href.split('#')[0]:location.origin+location.pathname;
+  const L=[
+    '@echo off',
+    'rem Abre Stock y Facturacion en Chrome con impresion automatica de tickets.',
+    'set "URL='+url.replace(/%/g,'%%')+'"',
+    'set "CHROME="',
+    'if exist "%ProgramFiles%\\Google\\Chrome\\Application\\chrome.exe" set "CHROME=%ProgramFiles%\\Google\\Chrome\\Application\\chrome.exe"',
+    'if exist "%ProgramFiles(x86)%\\Google\\Chrome\\Application\\chrome.exe" set "CHROME=%ProgramFiles(x86)%\\Google\\Chrome\\Application\\chrome.exe"',
+    'if exist "%LocalAppData%\\Google\\Chrome\\Application\\chrome.exe" set "CHROME=%LocalAppData%\\Google\\Chrome\\Application\\chrome.exe"',
+    'if "%CHROME%"=="" (',
+    '  echo No se encontro Google Chrome en esta computadora.',
+    '  pause',
+    '  exit /b 1',
+    ')',
+    'start "" "%CHROME%" --kiosk-printing --user-data-dir="%LocalAppData%\\StockFacturacion" --app="%URL%"'
+  ];
+  try{
+    const blob=new Blob([L.join('\r\n')+'\r\n'],{type:'application/octet-stream'});
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='Stock-Facturacion.bat';
+    document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);
+    toast('Archivo descargado. Guardalo en el escritorio.','¡Listo!');
+  }catch(e){toast('No se pudo crear el archivo.')}
+}
 function testInvoice(){
   const c=cfg(),items=[{nombre:'Queso cremoso (por kg)',unidad:'kg',qty:1.25,precio:9800},{nombre:'Yerba mate 1 kg',unidad:'u',qty:2,precio:4500}];
   const T=calcTotals(items,0,c);
@@ -823,6 +848,7 @@ document.addEventListener('click',async e=>{
   else if(a==='anular')anular(id);
   else if(a==='imprimir'){const inv=state.invoices.find(x=>x.id===id);if(inv)printTicket(inv)}
   else if(a==='tk-test')printTicket(testInvoice());
+  else if(a==='dl-bat')descargarAcceso();
   else if(a==='copiar'){const inv=state.invoices.find(x=>x.id===id);if(!inv)return;try{await navigator.clipboard.writeText(receiptText(inv));toast('Texto copiado.','¡Copiado!')}catch(err){toast('No se pudo copiar. Seleccioná el texto a mano.')}}
   else if(a==='dl-comp'){const inv=state.invoices.find(x=>x.id===id);if(inv)saveFile('comprobante-'+numFactura(inv)+'.html',receiptFile(inv))}
   else if(a==='export-prod')saveFile('productos.csv',csv([['Código','Producto','Categoría','Unidad','Stock','Mínimo','Costo','Precio']].concat(state.products.slice().sort((x,y)=>x.nombre.localeCompare(y.nombre,'es')).map(p=>[p.sku,p.nombre,p.categoria||'',p.unidad||'',cn(p.stock),cn(p.min),cn(p.costo),cn(p.precio)]))));
