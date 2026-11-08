@@ -220,7 +220,7 @@ const dateTime=ts=>new Date(ts).toLocaleString('es-AR',{day:'2-digit',month:'2-d
 /* ---------- estado ---------- */
 const state={products:[],invoices:[],movements:[],config:{}};
 const loaded={products:false,invoices:false,movements:false,config:false};
-const cfgDefault={negocio:'Mi comercio',cuit:'',domicilio:'',tel:'',cond:'Monotributista',iva:21,incluyeIva:true,pv:1,bzOn:true,bzPre:'2',bzPlu:6,bzVal:5,bzTipo:'peso',bzDiv:1000};
+const cfgDefault={negocio:'Mi comercio',cuit:'',domicilio:'',tel:'',cond:'Monotributista',iva:21,incluyeIva:true,pv:1,bzOn:true,bzPre:'2',bzPlu:6,bzVal:5,bzTipo:'peso',bzDiv:1000,tkAuto:true,tkAncho:'80',tkPie:'¡Gracias por su compra!'};
 const cfg=()=>Object.assign({},cfgDefault,state.config);
 let db=null, dlAPI=null, mode='cargando';
 let view='resumen';
@@ -458,8 +458,22 @@ function vAjustes(){
     <label class="f">Dígitos del valor<input id="a-bzval" name="bzVal" type="number" min="1" max="8" step="1" value="${esc(c.bzVal)}"></label>
     <label class="f">El valor es<select id="a-bztipo" name="bzTipo"><option value="peso"${c.bzTipo==='peso'?' selected':''}>Peso</option><option value="importe"${c.bzTipo==='importe'?' selected':''}>Importe en pesos</option></select></label>
     <label class="f">Dividir el valor por<select id="a-bzdiv" name="bzDiv">${[[1000,'1000 (gramos a kg)'],[100,'100 (centavos a pesos)'],[10,'10'],[1,'1 (valor entero)']].map(o=>`<option value="${o[0]}"${num(c.bzDiv)===o[0]?' selected':''}>${o[1]}</option>`).join('')}</select></label>
+    ${canPrint?`<div class="wide"><h3>Ticket e impresora</h3><p class="hint" style="margin-top:4px">Al emitir una venta se abre la impresión del ticket. Elegí tu impresora de tickets (por ejemplo la Xprinter) en la ventana de impresión.</p></div>
+    <label class="f wide" style="flex-direction:row;align-items:center;gap:8px"><input id="a-tkauto" name="tkAuto" type="checkbox"${c.tkAuto?' checked':''}> Imprimir el ticket al emitir una venta</label>
+    <label class="f">Ancho del papel<select id="a-tkancho" name="tkAncho"><option value="80"${c.tkAncho!=='58'?' selected':''}>80 mm</option><option value="58"${c.tkAncho==='58'?' selected':''}>58 mm</option></select></label>
+    <label class="f wide">Mensaje al pie del ticket<input id="a-tkpie" name="tkPie" value="${esc(c.tkPie)}" maxlength="80"></label>
+    <div class="wide row"><button type="button" class="btn" data-action="tk-test">Imprimir ticket de prueba</button></div>`:''}
   </div>
   <div class="row end" style="margin-top:16px"><button class="btn primary" type="submit">Guardar</button></div></form></section>
+  ${canPrint?`<section class="panel"><div class="panel-head"><h2>Conectar la Xprinter en Windows</h2></div>
+    <ol class="hint" style="margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px">
+      <li>Conectá la impresora por USB e instalá su controlador (lo da el fabricante o viene en el CD). Debería aparecer en Impresoras y escáneres de Windows.</li>
+      <li>En Windows, ponela como impresora predeterminada.</li>
+      <li>Tocá “Imprimir ticket de prueba”. En la ventana de Chrome elegí tu impresora y, en “Más ajustes”, poné Márgenes: Ninguno, Escala: 100% y desactivá Encabezados y pies de página.</li>
+      <li>Para que imprima sin preguntar cada vez: cerrá Chrome, hacé clic derecho en su acceso directo, entrá a Propiedades y al final del campo “Destino” agregá un espacio y <code>--kiosk-printing</code>. Abrí Chrome desde ese acceso directo.</li>
+    </ol>
+    <p class="hint" style="margin-top:10px">Este ticket es un comprobante interno: dice “no válido como factura”. Para una factura legal hay que emitirla desde ARCA o con un controlador fiscal homologado.</p></section>`:''}
+
   <section class="panel"><div class="panel-head"><h2>Probar una etiqueta de balanza</h2></div>
     <label class="f">Escaneá o escribí el código de la etiqueta<input id="bz-test" inputmode="numeric" placeholder="Ej.: 2000109007502" autocomplete="off"></label>
     <p class="bzout" id="bz-out" role="status">Escaneá o escribí el código de una etiqueta de tu balanza.</p>
@@ -585,7 +599,64 @@ function dlgComprobante(id){
   const banner=justSold===id?'<div class="sfx-banner">¡Cobrado! Venta registrada</div>':'';justSold=null;
   openDlg(banner+receiptInner(inv)+`<div class="row end" style="margin-top:16px">
     ${inv.estado!=='anulada'?`<button class="btn danger" data-action="anular" data-id="${esc(id)}" style="margin-right:auto">${conf?'Confirmar anulación y devolver stock':'Anular'}</button>`:''}
-    <button class="btn" data-action="copiar" data-id="${esc(id)}">Copiar texto</button>${dlAPI?`<button class="btn" data-action="dl-comp" data-id="${esc(id)}">Descargar</button>`:''}<button class="btn primary" data-action="cerrar">Cerrar</button></div>`);
+    ${canPrint?`<button class="btn" data-action="imprimir" data-id="${esc(id)}">Imprimir ticket</button>`:''}<button class="btn" data-action="copiar" data-id="${esc(id)}">Copiar texto</button>${dlAPI?`<button class="btn" data-action="dl-comp" data-id="${esc(id)}">Descargar</button>`:''}<button class="btn primary" data-action="cerrar">Cerrar</button></div>`);
+}
+/* ---------- ticket para impresora térmica (Xprinter u otra) ---------- */
+const canPrint=!(window.claude&&window.claude.use);
+function ticketHtml(inv){
+  const c=Object.assign({},cfg(),inv.cfg||{}),w58=cfg().tkAncho==='58',pie=String(cfg().tkPie||'').trim();
+  const items=(inv.items||[]).map(i=>`<div class="it"><div class="nm">${esc(i.nombre)}</div><div class="ln"><span>${fmtNum.format(i.qty)} ${esc(i.unidad||'u')} x ${money(i.precio)}</span><span>${money(i.qty*i.precio)}</span></div></div>`).join('');
+  const head=[c.cuit?'CUIT '+esc(c.cuit):'',esc(c.cond||''),c.domicilio?esc(c.domicilio):'',c.tel?'Tel. '+esc(c.tel):''].filter(Boolean).map(t=>`<div>${t}</div>`).join('');
+  return `<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Ticket ${esc(numFactura(inv))}</title><style>
+@page{size:${w58?'58mm':'80mm'} auto;margin:0}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#fff;color:#000}
+body{width:${w58?'48mm':'72mm'};margin:0 auto;padding:3mm 0 8mm;font:${w58?'11px':'12px'}/1.35 'Courier New',Consolas,monospace}
+.c{text-align:center}.b{font-weight:700}.big{font-size:1.3em;font-weight:700}
+.ln{display:flex;flex-wrap:wrap;justify-content:space-between;gap:0 6px}
+.ln span{white-space:nowrap}
+.ln span:last-child{margin-left:auto}
+.sep{border-top:1px dashed #000;margin:5px 0}
+.it{margin:3px 0}.nm{overflow-wrap:anywhere}
+.tot{font-size:1.35em;font-weight:700}
+.small{font-size:.85em}
+</style></head><body>
+<div class="c"><div class="big">${esc(c.negocio)}</div>${head}</div>
+<div class="sep"></div>
+<div class="b">TICKET ${esc(numFactura(inv))}</div>
+<div>${esc(dateTime(inv.ts))}</div>
+<div>Cliente: ${esc(inv.cliente||'Consumidor final')}${inv.doc?' · '+esc(inv.doc):''}</div>
+<div>Pago: ${esc(inv.pago||'')}</div>
+<div class="sep"></div>
+${items}
+<div class="sep"></div>
+<div class="ln"><span>Subtotal</span><span>${money(inv.subtotal)}</span></div>
+${inv.descuento>0?`<div class="ln"><span>Descuento</span><span>- ${money(inv.descuento)}</span></div>`:''}
+${inv.ivaPct>0?`<div class="ln"><span>Neto gravado</span><span>${money(inv.neto)}</span></div><div class="ln"><span>IVA ${fmtNum.format(inv.ivaPct)}%</span><span>${money(inv.iva)}</span></div>`:''}
+<div class="sep"></div>
+<div class="ln tot"><span>TOTAL</span><span>${money(inv.total)}</span></div>
+<div class="sep"></div>
+${inv.estado==='anulada'?'<div class="c big">*** ANULADO ***</div>':''}
+${pie?`<div class="c">${esc(pie)}</div>`:''}
+<div class="c small" style="margin-top:4px">Documento no válido como factura</div>
+</body></html>`;
+}
+function printTicket(inv){
+  if(!canPrint)return;
+  try{
+    const f=document.createElement('iframe');
+    f.setAttribute('aria-hidden','true');f.setAttribute('tabindex','-1');
+    f.style.cssText='position:fixed;right:0;bottom:0;width:0;height:0;border:0;visibility:hidden';
+    document.body.appendChild(f);
+    const d=f.contentWindow.document;d.open();d.write(ticketHtml(inv));d.close();
+    setTimeout(()=>{try{f.contentWindow.focus();f.contentWindow.print()}catch(e){toast('No se pudo abrir la impresión.')}},200);
+    setTimeout(()=>{try{f.remove()}catch(e){}},120000);
+  }catch(e){toast('No se pudo preparar el ticket.')}
+}
+function testInvoice(){
+  const c=cfg(),items=[{nombre:'Queso cremoso (por kg)',unidad:'kg',qty:1.25,precio:9800},{nombre:'Yerba mate 1 kg',unidad:'u',qty:2,precio:4500}];
+  const T=calcTotals(items,0,c);
+  return {numero:0,pv:num(c.pv)||1,ts:Date.now(),cliente:'',doc:'',pago:'Contado',items,subtotal:T.sub,descuento:T.descAmt,neto:T.neto,iva:T.iva,ivaPct:T.rate,total:T.total,estado:'emitida',cfg:{negocio:c.negocio,cuit:c.cuit,domicilio:c.domicilio,tel:c.tel,cond:c.cond}};
 }
 function receiptText(inv){
   const c=Object.assign({},cfg(),inv.cfg||{});
@@ -681,7 +752,7 @@ async function emitir(){
     busy=false;render();
     const saved=Object.assign({id},inv);
     if(!state.invoices.find(x=>x.id===id))state.invoices.push(saved);
-    justSold=id;dlgComprobante(id);
+    justSold=id;dlgComprobante(id);if(canPrint&&cfg().tkAuto)printTicket(saved);
   }catch(e){busy=false;saleErr='No se pudo guardar la venta. Revisá el stock y volvé a intentar.';render()}
 }
 async function anular(id){
@@ -750,6 +821,8 @@ document.addEventListener('click',async e=>{
   else if(a==='emitir')emitir();
   else if(a==='ver'){confirming=null;dlgComprobante(id)}
   else if(a==='anular')anular(id);
+  else if(a==='imprimir'){const inv=state.invoices.find(x=>x.id===id);if(inv)printTicket(inv)}
+  else if(a==='tk-test')printTicket(testInvoice());
   else if(a==='copiar'){const inv=state.invoices.find(x=>x.id===id);if(!inv)return;try{await navigator.clipboard.writeText(receiptText(inv));toast('Texto copiado.','¡Copiado!')}catch(err){toast('No se pudo copiar. Seleccioná el texto a mano.')}}
   else if(a==='dl-comp'){const inv=state.invoices.find(x=>x.id===id);if(inv)saveFile('comprobante-'+numFactura(inv)+'.html',receiptFile(inv))}
   else if(a==='export-prod')saveFile('productos.csv',csv([['Código','Producto','Categoría','Unidad','Stock','Mínimo','Costo','Precio']].concat(state.products.slice().sort((x,y)=>x.nombre.localeCompare(y.nombre,'es')).map(p=>[p.sku,p.nombre,p.categoria||'',p.unidad||'',cn(p.stock),cn(p.min),cn(p.costo),cn(p.precio)]))));
@@ -845,7 +918,7 @@ document.addEventListener('submit',async e=>{
       closeDlg();render();toast('Movimiento registrado.','¡Anotado!');
     }catch(x){err.textContent='No se pudo registrar. Volvé a intentar.';err.hidden=false}
   }else if(f.id==='f-cfg'){
-    const data={negocio:String(fd.get('negocio')||'').trim()||'Mi comercio',cuit:String(fd.get('cuit')||'').trim(),tel:String(fd.get('tel')||'').trim(),domicilio:String(fd.get('domicilio')||'').trim(),cond:String(fd.get('cond')),iva:Math.max(num(fd.get('iva')),0),pv:Math.max(Math.round(num(fd.get('pv')))||1,1),incluyeIva:fd.get('incluyeIva')==='on',bzOn:fd.get('bzOn')==='on',bzPre:String(fd.get('bzPre')||'').replace(/\D/g,'')||'2',bzPlu:Math.min(Math.max(Math.round(num(fd.get('bzPlu')))||6,1),9),bzVal:Math.min(Math.max(Math.round(num(fd.get('bzVal')))||5,1),8),bzTipo:fd.get('bzTipo')==='importe'?'importe':'peso',bzDiv:num(fd.get('bzDiv'))||1000};
+    const data={negocio:String(fd.get('negocio')||'').trim()||'Mi comercio',cuit:String(fd.get('cuit')||'').trim(),tel:String(fd.get('tel')||'').trim(),domicilio:String(fd.get('domicilio')||'').trim(),cond:String(fd.get('cond')),iva:Math.max(num(fd.get('iva')),0),pv:Math.max(Math.round(num(fd.get('pv')))||1,1),incluyeIva:fd.get('incluyeIva')==='on',bzOn:fd.get('bzOn')==='on',bzPre:String(fd.get('bzPre')||'').replace(/\D/g,'')||'2',bzPlu:Math.min(Math.max(Math.round(num(fd.get('bzPlu')))||6,1),9),bzVal:Math.min(Math.max(Math.round(num(fd.get('bzVal')))||5,1),8),bzTipo:fd.get('bzTipo')==='importe'?'importe':'peso',bzDiv:num(fd.get('bzDiv'))||1000,tkAuto:fd.get('tkAuto')==='on',tkAncho:fd.get('tkAncho')==='58'?'58':'80',tkPie:String(fd.get('tkPie')||'').trim().slice(0,80)};
     try{await putConfig(data);if(mode!=='db'){}render();toast('Ajustes guardados.','¡Guardado!')}catch(x){toast('No se pudieron guardar los ajustes.')}
   }
 });
